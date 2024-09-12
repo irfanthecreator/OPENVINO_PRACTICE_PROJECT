@@ -4,6 +4,7 @@ import cv2
 import numpy
 import utils
 import io
+from camera_input_live import camera_input_live  # Importing camera_input_live
 
 def play_video(video_source):
     camera = cv2.VideoCapture(video_source)
@@ -19,6 +20,15 @@ def play_video(video_source):
         else:
             camera.release()
             break
+
+# New function to handle live camera input
+def play_camera_input():
+    camera_frames = camera_input_live()  # Assuming this function yields frames from the camera
+
+    st_frame = st.empty()
+    for frame in camera_frames:
+        visualized_image = utils.predict_image(frame, conf_threshold)
+        st_frame.image(visualized_image, channels="BGR")
 
 # Page configuration with updated labels
 st.set_page_config(
@@ -85,4 +95,4 @@ if source_radio == "VIDEO":
         st.write("Click on 'Browse Files' in the sidebar to run inference on a video.")
 
 if source_radio == "WEBCAM":
-    play_video(0)
+    play_camera_input()  # Replacing the previous play_video(0) with play_camera_input
